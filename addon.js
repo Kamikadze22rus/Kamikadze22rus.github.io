@@ -500,15 +500,15 @@ Lampa.SettingsApi.addComponent({
 					},
 					onChange: function(value) {
 						if (value == '1') {
-							itemON('https://andreyurl54.github.io/diesel5/tricks.js', 'Приятные Мелочи', '@AndreyURL54', 'Tricks');
+							itemON('https://amikdn.github.io/tricks.js', 'Приятные Мелочи', '@lampa', 'Tricks');
 						}
 						if (value == '2') {
-							var pluginToRemoveUrl = "https://andreyurl54.github.io/diesel5/tricks.js";
+							var pluginToRemoveUrl = "https://amikdn.github.io/tricks.js";
 							deletePlugin(pluginToRemoveUrl);
 						}	
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900');  hideInstall()
-						/*var myResult = checkPlugin('https://andreyurl54.github.io/diesel5/tricks.js')
+						/*var myResult = checkPlugin('https://amikdn.github.io/tricks.js')
 						setTimeout(function() {	
 							$('div[data-name="Tricks"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -517,13 +517,13 @@ Lampa.SettingsApi.addComponent({
 								$('div[data-name="Tricks"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
-						var myResult = checkPlugin('https://andreyurl54.github.io/diesel5/tricks.js');
+						var myResult = checkPlugin('https://amikdn.github.io/tricks.js');
                                                 var pluginsArray = Lampa.Storage.get('plugins');
                                                     setTimeout(function() {
                                                        $('div[data-name="Tricks"]').append('<div class="settings-param__status one"></div>');
                                                        var pluginStatus = null;
                                                        for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'https://andreyurl54.github.io/diesel5/tricks.js') {
+                                                          if (pluginsArray[i].url === 'https://amikdn.github.io/tricks.js') {
                                                              pluginStatus = pluginsArray[i].status;
                                                              break;
                                                           }
@@ -1425,7 +1425,61 @@ Lampa.SettingsApi.addComponent({
 					}
 		});
 
-
+	        Lampa.SettingsApi.addParam({
+					component: 'add_interface_plugin',
+					param: {
+						name: 'in_qual',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+					//default: '1',
+						},
+					field: {
+						name: 'В качестве',
+						description: 'Плагин добавляет в левом меню пункт с фильмами, которые вышли в высоком качестве'
+					},
+					onChange: function(value) {
+						if (value == '1') {
+						       itemON('https://Kamikadze22rus.github.io/quality.js', 'В Качестве', '@lampa', 'qual');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/quality.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/weather.js')
+						setTimeout(function() {	
+							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/quality.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="in_qual"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/quality.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="in_qual"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="in_qual"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="in_qual"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+		});
 
 	        Lampa.SettingsApi.addParam({
 					component: 'add_interface_plugin',
@@ -1703,6 +1757,62 @@ Lampa.SettingsApi.addComponent({
                                                           $('div[data-name="inter_movie"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
                                                        } else {
                                                           $('div[data-name="inter_movie"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+		});
+
+			        Lampa.SettingsApi.addParam({
+					component: 'add_interface_plugin',
+					param: {
+						name: 'rate_lampa',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+					//default: '1',
+						},
+					field: {
+						name: 'Рейтинг Lampa',
+						description: 'Плагин добавляет в карточку рейтинг Lampa, основываясь на оценках пользователей'
+					},
+					onChange: function(value) {
+						if (value == '1') {
+						       itemON('https://Kamikadze22rus.github.io/lampa_rate.js', 'Рейтинг Lampa', '@lampa', 'rate_lampa');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/lampa_rate.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/lampa_rate.js')
+						setTimeout(function() {	
+							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/lampa_rate.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="rate_lampa"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/lampa_rate.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="rate_lampa"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="rate_lampa"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="rate_lampa"]').find('.settings-param__status').removeClass('active error').addClass('error');
                                                        }
                                                     }, 100);
 					}
