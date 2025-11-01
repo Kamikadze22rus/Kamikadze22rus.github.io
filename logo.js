@@ -1,39 +1,62 @@
 (function () {
-  'use strict';
+    'use strict';
 
-  Lampa.Listener.follow("full", function (event) {
-    if (event.type == "complite" && Lampa.Storage.get("logo_card") !== false) {
-      var movieData = event.data.movie; 
-      var contentType = movieData.name ? 'tv' : 'movie'; 
-      var tmdbApiUrl = "http://212.113.103.137:9118/proxy/http://api.themoviedb.org/3/" + 
-                        contentType + '/' + movieData.id + 
-                        "/images?api_key=" + "4ef0d7355d9ffb5151e987764708ce96" + 
-                        "&language=" + Lampa.Storage.get("language");
+    // Функция для запуска плагина
+    function startPlugin() {
+        // Устанавливаем флаг, что плагин активирован
+        window.logoplugin = true;
 
-      $.get(tmdbApiUrl, function (response) {
-        if (response.logos && response.logos[0]) {
-          var logoPath = response.logos[0].file_path; 
+        // Подписываемся на событие 'full' в Lampa.Listener
+        Lampa.Listener.follow('full', function (e) {
+            // Проверяем, что событие имеет тип 'complite' и параметр logo_glav не равен '1'
+            if (e.type === 'complite' && Lampa.Storage.get('logo_glav') !== '1') {
+                var data = e.data.movie;
+                var type = data.name ? 'tv' : 'movie';
 
-          if (logoPath !== '') {
-            if (Lampa.Storage.get("card_interfice_type") === 'new') {
-              $(".full-start-new__tagline").remove();
-              $('.full-start-new__title').html(
-                "<img style=\"margin-top: 0.3em; margin-bottom: 0.1em; max-height: 1.8em;\" " + 
-                "src=\"http://212.113.103.137:9118/proxyimg/http://image.tmdb.org/t/p/w500" + 
-                logoPath.replace(".svg", ".png") + "\" />"
-              );
-            } else {
-              $(".full-start__title-original").remove();
-              $('.full-start__title').html(
-                "<img style=\"margin-top: 0.3em; margin-bottom: 0.4em; max-height: 1.8em;\" " + 
-                "src=\"http://212.113.103.137:9118/proxyimg/http://image.tmdb.org/t/p/w500" + 
-                logoPath.replace(".svg", ".png") + "\" />"
-              );
+                // Проверяем, что ID фильма не пустое
+                if (data.id !== '') {
+                    // Формируем URL для запроса к API TMDB
+                    var url = Lampa.TMDB.api(type + '/' + data.id + '/images?api_key=' + Lampa.TMDB.key() + '&language=' + Lampa.Storage.get('language'));
+
+                    // Выполняем GET-запрос к API
+                    $.get(url, function (data) {
+                        // Проверяем наличие логотипов в ответе
+                        if (data.logos && data.logos[0]) {
+                            var logo = data.logos[0].file_path;
+
+                            // Если логотип существует, заменяем текстовое название на изображение
+                            if (logo !== '') {
+                                e.object.activity.render()
+                                    .find('.full-start-new__title')
+                                    .html('<img style="margin-top:5px; max-height:125px;" src="' + Lampa.TMDB.image('/t/p/w300' + logo.replace('.svg', '.png')) + '"/>');
+                            }
+                        }
+                    });
+                }
             }
-          }
-        }
-      });
+        });
     }
-  });
 
+    // Добавляем параметр в настройки Lampa
+    Lampa.SettingsApi.addParam({
+        component: 'interface',
+        param: {
+            name: 'logo_glav',
+            type: 'select',
+            values: {
+                '1': 'Скрыть',
+                '0': 'Отображать'
+            },
+            default: '0'
+        },
+        field: {
+            name: 'Логотипы вместо названий',
+            description: 'Отображает логотипы фильмов вместо текста'
+        }
+    });
+
+    // Запускаем плагин, если он еще не активирован
+    if (!window.logoplugin) {
+        startPlugin();
+    }
 })();

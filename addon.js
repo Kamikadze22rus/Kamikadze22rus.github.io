@@ -44,134 +44,156 @@ Lampa.Modal.open({
 
 /* Функция анимации установки плагина */	
 function showLoadingBar() {
-  // Создаем элемент для полосы загрузки
-  var loadingBar = document.createElement('div');
-  loadingBar.className = 'loading-bar';
-  loadingBar.style.position = 'fixed';
-  loadingBar.style.top = '50%';
-  loadingBar.style.left = '50%';
-  loadingBar.style.transform = 'translate(-50%, -50%)'; // Центрируем по центру
-  loadingBar.style.zIndex = '9999';
-  loadingBar.style.display = 'none';
-  loadingBar.style.width = '30em';
-  loadingBar.style.height = '2.5em'; 
-  loadingBar.style.backgroundColor = '#595959';
-  loadingBar.style.borderRadius = '4em';
+  // Создаем контейнер для анимации
+  var loadingContainer = document.createElement('div');
+  loadingContainer.className = 'loading-container';
+  loadingContainer.style.position = 'fixed';
+  loadingContainer.style.top = '50%';
+  loadingContainer.style.left = '50%';
+  loadingContainer.style.transform = 'translate(-50%, -50%)';
+  loadingContainer.style.zIndex = '9999';
+  loadingContainer.style.width = '25em';
+  loadingContainer.style.height = '3em';
+  loadingContainer.style.background = 'rgba(0, 0, 0, 0.8)';
+  loadingContainer.style.borderRadius = '8px';
+  loadingContainer.style.display = 'flex';
+  loadingContainer.style.alignItems = 'center';
+  loadingContainer.style.justifyContent = 'center';
+  loadingContainer.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
 
-  // Создаем элемент для индикатора загрузки
-  var loadingIndicator = document.createElement('div');
-  loadingIndicator.className = 'loading-indicator';
-  loadingIndicator.style.position = 'absolute';
-  loadingIndicator.style.left = '0';
-  loadingIndicator.style.top = '0';
-  loadingIndicator.style.bottom = '0';
-  loadingIndicator.style.width = '0';
-  loadingIndicator.style.backgroundColor = '#64e364';
-  loadingIndicator.style.borderRadius = '4em';
+  // Создаем элемент прогресс-бара
+  var progressBar = document.createElement('div');
+  progressBar.className = 'progress-bar';
+  progressBar.style.width = '0%';
+  progressBar.style.height = '100%';
+  progressBar.style.background = 'linear-gradient(90deg, #00cc00, #66ff66)';
+  progressBar.style.borderRadius = '8px';
 
-  // Создаем элемент для отображения процента загрузки
-  var loadingPercentage = document.createElement('div');
-  loadingPercentage.className = 'loading-percentage';
-  loadingPercentage.style.position = 'absolute';
-  loadingPercentage.style.top = '50%';
-  loadingPercentage.style.left = '50%';
-  loadingPercentage.style.transform = 'translate(-50%, -50%)';
-  loadingPercentage.style.color = '#fff';
-  loadingPercentage.style.fontWeight = 'bold';
-  loadingPercentage.style.fontSize = '1.7em';
+  // Создаем текст для процентов
+  var loadingText = document.createElement('div');
+  loadingText.className = 'loading-text';
+  loadingText.style.position = 'absolute';
+  loadingText.style.color = '#fff';
+  loadingText.style.fontWeight = 'bold';
+  loadingText.style.fontSize = '1.5em';
+  loadingText.textContent = '0%';
 
   // Добавляем элементы на страницу
-  loadingBar.appendChild(loadingIndicator);
-  loadingBar.appendChild(loadingPercentage);
-  document.body.appendChild(loadingBar);
+  loadingContainer.appendChild(progressBar);
+  loadingContainer.appendChild(loadingText);
+  document.body.appendChild(loadingContainer);
 
-  // Отображаем полосу загрузки
-  loadingBar.style.display = 'block';
+  // Добавляем CSS-анимацию
+  var style = document.createElement('style');
+  style.textContent = `
+    @keyframes fillProgress {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+    .progress-bar {
+      animation: fillProgress 1s ease-in-out forwards;
+    }
+  `;
+  document.head.appendChild(style);
 
-  // Анимация с использованием setTimeout
+  // Обновляем текст процентов
   var startTime = Date.now();
   var duration = 1000; // 1 секунда
   var interval = setInterval(function() {
-  var elapsed = Date.now() - startTime;
-  var progress = Math.min((elapsed / duration) * 100, 100);
-
-    loadingIndicator.style.width = progress + '%';
-    loadingPercentage.textContent = Math.round(progress) + '%';
-
+    var elapsed = Date.now() - startTime;
+    var progress = Math.min((elapsed / duration) * 100, 100);
+    loadingText.textContent = Math.round(progress) + '%';
     if (elapsed >= duration) {
       clearInterval(interval);
-      setTimeout(function() {
-        loadingBar.style.display = 'none';
-        loadingBar.parentNode.removeChild(loadingBar);
-      }, 250);
     }
   }, 16);
+
+  // Удаляем через 1.2 секунды
+  setTimeout(() => {
+    loadingContainer.style.opacity = '0';
+    loadingContainer.style.transition = 'opacity 0.2s ease';
+    setTimeout(() => {
+      loadingContainer.remove();
+      document.head.removeChild(style);
+    }, 200);
+  }, 1200);
 }
 
 /* Функция анимации удаления плагина */	
 function showDeletedBar() {
-  // Создаем элемент для полосы загрузки
-  var loadingBar = document.createElement('div');
-  loadingBar.className = 'loading-bar';
-  loadingBar.style.position = 'fixed';
-  loadingBar.style.top = '50%';
-  loadingBar.style.left = '50%';
-  loadingBar.style.transform = 'translate(-50%, -50%)'; // Центрируем по центру
-  loadingBar.style.zIndex = '9999';
-  loadingBar.style.display = 'none';
-  loadingBar.style.width = '30em';
-  loadingBar.style.height = '2.5em';
-  loadingBar.style.backgroundColor = '#595959';
-  loadingBar.style.borderRadius = '4em';
+  // Создаем контейнер для анимации
+  var loadingContainer = document.createElement('div');
+  loadingContainer.className = 'loading-container';
+  loadingContainer.style.position = 'fixed';
+  loadingContainer.style.top = '50%';
+  loadingContainer.style.left = '50%';
+  loadingContainer.style.transform = 'translate(-50%, -50%)';
+  loadingContainer.style.zIndex = '9999';
+  loadingContainer.style.width = '25em';
+  loadingContainer.style.height = '3em';
+  loadingContainer.style.background = 'rgba(0, 0, 0, 0.8)';
+  loadingContainer.style.borderRadius = '8px';
+  loadingContainer.style.display = 'flex';
+  loadingContainer.style.alignItems = 'center';
+  loadingContainer.style.justifyContent = 'center';
+  loadingContainer.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
 
-  // Создаем элемент для индикатора загрузки
-  var loadingIndicator = document.createElement('div');
-  loadingIndicator.className = 'loading-indicator';
-  loadingIndicator.style.position = 'absolute';
-  loadingIndicator.style.left = '0';
-  loadingIndicator.style.top = '0';
-  loadingIndicator.style.bottom = '0';
-  loadingIndicator.style.width = '0';
-  loadingIndicator.style.backgroundColor = '#ff2121';
-  loadingIndicator.style.borderRadius = '4em';
+  // Создаем элемент прогресс-бара
+  var progressBar = document.createElement('div');
+  progressBar.className = 'progress-bar';
+  progressBar.style.width = '100%';
+  progressBar.style.height = '100%';
+  progressBar.style.background = 'linear-gradient(90deg, #ff3333, #ff6666)';
+  progressBar.style.borderRadius = '8px';
 
-  // Создаем элемент для отображения процента загрузки
-  var loadingPercentage = document.createElement('div');
-  loadingPercentage.className = 'loading-percentage';
-  loadingPercentage.style.position = 'absolute';
-  loadingPercentage.style.top = '50%';
-  loadingPercentage.style.left = '50%';
-  loadingPercentage.style.transform = 'translate(-50%, -50%)';
-  loadingPercentage.style.color = '#fff';
-  loadingPercentage.style.fontWeight = 'bold';
-  loadingPercentage.style.fontSize = '1.7em';
+  // Создаем текст для процентов
+  var loadingText = document.createElement('div');
+  loadingText.className = 'loading-text';
+  loadingText.style.position = 'absolute';
+  loadingText.style.color = '#fff';
+  loadingText.style.fontWeight = 'bold';
+  loadingText.style.fontSize = '1.5em';
+  loadingText.textContent = '100%';
 
   // Добавляем элементы на страницу
-  loadingBar.appendChild(loadingIndicator);
-  loadingBar.appendChild(loadingPercentage);
-  document.body.appendChild(loadingBar);
+  loadingContainer.appendChild(progressBar);
+  loadingContainer.appendChild(loadingText);
+  document.body.appendChild(loadingContainer);
 
-  // Отображаем полосу загрузки
-  loadingBar.style.display = 'block';
+  // Добавляем CSS-анимацию
+  var style = document.createElement('style');
+  style.textContent = `
+    @keyframes reduceProgress {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .progress-bar {
+      animation: reduceProgress 1s ease-in-out forwards;
+    }
+  `;
+  document.head.appendChild(style);
 
-  // Анимация с использованием setTimeout
+  // Обновляем текст процентов
   var startTime = Date.now();
   var duration = 1000; // 1 секунда
   var interval = setInterval(function() {
-  var elapsed = Date.now() - startTime;
-  var progress = 100 - Math.min((elapsed / duration) * 100, 100);
-
-    loadingIndicator.style.width = progress + '%';
-    loadingPercentage.textContent = Math.round(progress) + '%';
-
+    var elapsed = Date.now() - startTime;
+    var progress = 100 - Math.min((elapsed / duration) * 100, 100);
+    loadingText.textContent = Math.round(progress) + '%';
     if (elapsed >= duration) {
       clearInterval(interval);
-      setTimeout(function() {
-        loadingBar.style.display = 'none';
-        loadingBar.parentNode.removeChild(loadingBar);
-      }, 250);
     }
   }, 16);
+
+  // Удаляем через 1.2 секунды
+  setTimeout(() => {
+    loadingContainer.style.opacity = '0';
+    loadingContainer.style.transition = 'opacity 0.2s ease';
+    setTimeout(() => {
+      loadingContainer.remove();
+      document.head.removeChild(style);
+    }, 200);
+  }, 1200);
 }
 	
 /* Следим за настройками */
@@ -377,7 +399,293 @@ Lampa.SettingsApi.addComponent({
 					}
 		});
 
+			Lampa.SettingsApi.addParam({
+					component: 'add_interface_plugin',
+					param: {
+						name: 'TMDB Alt',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+                    			//default: '1',
+						},
+					field: {
+						name: 'TMDB Alt',
+						description: 'Альтернативный плагин проксирования постеров для сайта TMDB'
+                            },
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('https://Kamikadze22rus.github.io/tmdbalt.js', 'TMDB Alt', '@lampa', 'TMDB Alt');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/tmdbalt.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {
+						$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/tmdbalt.js')
+						setTimeout(function() {	
+							$('div[data-name="TTMDB Alt"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="TMDB Alt"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="TMDB Alt"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/tmdbalt.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="TMDB Alt"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/tmdbalt.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="TMDB Alt"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="TMDB Alt"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="TMDB Alt"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+		});
 
+				Lampa.SettingsApi.addParam({
+					component: 'add_interface_plugin',
+					param: {
+						name: 'Interface Mod',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+                    			//default: '1',
+						},
+					field: {
+						name: 'Interface Mod',
+						description: 'Улучшенный интерфейс'
+                            },
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('https://Kamikadze22rus.github.io/interface_mod.js', 'Interface Mod', '@lampa', 'Interface Mod');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/interface_mod.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {
+						$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/interface_mod.js')
+						setTimeout(function() {	
+							$('div[data-name="Interface Mod"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="Interface Mod"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="Interface Mod"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/interface_mod.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="Interface Mod"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/interface_mod.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="Interface Mod"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="Interface Mod"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="Interface Mod"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+		});
+
+		    Lampa.SettingsApi.addParam({
+					component: 'add_interface_plugin',
+					param: {
+						name: 'filter_content',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+					//default: '1',
+						},
+					field: {
+						name: 'Фильтр контента',
+						description: 'Плагин позволяет фильтровать вывод карточек в приложении через настройки в разделе интерфейс - пункт Фильтр контента'
+					},
+					onChange: function(value) {
+						if (value == '1') {
+						       itemON('https://Kamikadze22rus.github.io/filter_content.js', 'Фильтр Контента', '@lampa', 'filter_content');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/filter_content.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/weather.js')
+						setTimeout(function() {	
+							$('div[data-name="filter_content"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="filter_content"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="filter_content"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/filter_content.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="filter_content"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/filter_content.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="filter_content"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="filter_content"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="filter_content"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+						    item.on("hover:enter", function (event) {
+                                                        nthChildIndex = focus_back(event); // Сохраняем элемент в переменной
+						    });
+					}
+		});
+
+				Lampa.SettingsApi.addParam({
+					component: 'add_interface_plugin',
+					param: {
+						name: 'PersonalHub',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+                    			//default: '1',
+						},
+					field: {
+						name: 'PersonalHub',
+						description: 'Плагин добавляет источник Personal Hub, в котором можно сортировать/изменять разделы и карточки на свой вкус'
+                            },
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('https://Kamikadze22rus.github.io/personalhub.js', 'PersonalHub', '@lampa', 'PersonalHub');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/personalhub.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {
+						$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/personalhub.js')
+						setTimeout(function() {	
+							$('div[data-name="PersonalHub"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="PersonalHub"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="PersonalHub"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/personalhub.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="PersonalHub"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/personalhub.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="PersonalHub"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="PersonalHub"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="PersonalHub"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+		});
+
+				Lampa.SettingsApi.addParam({
+					component: 'add_interface_plugin',
+					param: {
+						name: 'qlty',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+                    			//default: '1',
+						},
+					field: {
+						name: 'qlty',
+						description: 'Отметки качества фильмов на картоках'
+                            },
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('https://Kamikadze22rus.github.io/qlty.js', 'qlty', '@lampa', 'qlty');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/qlty.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {
+						$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/qlty.js')
+						setTimeout(function() {	
+							$('div[data-name="qlty"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="qlty"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="qlty"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/qlty.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="qlty"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/qlty.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="qlty"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="qlty"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="qlty"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+		});
+	
 					Lampa.SettingsApi.addParam({
 					component: 'add_interface_plugin',
 					param: {
@@ -395,16 +703,16 @@ Lampa.SettingsApi.addComponent({
                             },
 					onChange: function(value) {
 						if (value == '1') {
-							itemON('http://llpp.in/ur/notrailer.js', 'Удаление Трейлеров', '@lampa', 'NoTrailer');
+							itemON('https://Kamikadze22rus.github.io/notrailer.js', 'Удаление Трейлеров', '@lampa', 'NoTrailer');
 						}
 						if (value == '2') {
-							var pluginToRemoveUrl = "http://llpp.in/ur/notrailer.js";
+							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/notrailer.js";
 							deletePlugin(pluginToRemoveUrl);
 						}
 					},
 					onRender: function (item) {
 						$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('http://llpp.in/ur/notrailer.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/notrailer.js')
 						setTimeout(function() {	
 							$('div[data-name="NoTrailer"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -413,13 +721,13 @@ Lampa.SettingsApi.addComponent({
 								$('div[data-name="NoTrailer"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
-						var myResult = checkPlugin('http://llpp.in/ur/notrailer.js');
+						var myResult = checkPlugin('https://Kamikadze22rus.github.io/notrailer.js');
                                                 var pluginsArray = Lampa.Storage.get('plugins');
                                                     setTimeout(function() {
                                                        $('div[data-name="NoTrailer"]').append('<div class="settings-param__status one"></div>');
                                                        var pluginStatus = null;
                                                        for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'http://llpp.in/ur/notrailer.js') {
+                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/notrailer.js') {
                                                              pluginStatus = pluginsArray[i].status;
                                                              break;
                                                           }
@@ -430,110 +738,6 @@ Lampa.SettingsApi.addComponent({
                                                           $('div[data-name="NoTrailer"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
                                                        } else {
                                                           $('div[data-name="NoTrailer"]').find('.settings-param__status').removeClass('active error').addClass('error');
-                                                       }
-                                                    }, 100);
-					}
-		});
-       
-		/*Lampa.SettingsApi.addParam({
-					component: 'add_interface_plugin',
-					param: {
-						name: 'Feedback',
-						type: 'select',
-						values: {
-							1:	'Установить',
-							2:	'Удалить',
-						},
-					//default: '1',
-						},
-					field: {
-						name: 'Отзывы',
-						description: 'Добавляет в карточке кнопку с отзывами'
-					},
-					onChange: function(value) {
-						if (value == '1') {
-							itemON('http://newtv.mail66.org/o.js', 'Отзывы', '@elenatv99', 'Feedback');
-						}
-						if (value == '2') {
-							var pluginToRemoveUrl = "http://newtv.mail66.org/o.js";
-							deletePlugin(pluginToRemoveUrl);
-						}
-					},
-					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						
-						var myResult = checkPlugin('http://newtv.mail66.org/o.js');
-                                                var pluginsArray = Lampa.Storage.get('plugins');
-                                                    setTimeout(function() {
-                                                       $('div[data-name="Feedback"]').append('<div class="settings-param__status one"></div>');
-                                                       var pluginStatus = null;
-                                                       for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'http://newtv.mail66.org/o.js') {
-                                                             pluginStatus = pluginsArray[i].status;
-                                                             break;
-                                                          }
-                                                       }
-                                                       if (myResult && pluginStatus !== 0) {
-                                                          $('div[data-name="Feedback"]').find('.settings-param__status').removeClass('active error').addClass('active');
-                                                       } else if (pluginStatus === 0) {
-                                                          $('div[data-name="Feedback"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
-                                                       } else {
-                                                          $('div[data-name="Feedback"]').find('.settings-param__status').removeClass('active error').addClass('error');
-                                                       }
-                                                    }, 100);
-					}
-		});*/
-       
-		Lampa.SettingsApi.addParam({
-					component: 'add_interface_plugin',
-					param: {
-						name: 'Tricks',
-						type: 'select',
-						values: {
-							1:	'Установить',
-							2:	'Удалить',
-						},
-					//default: '1',
-						},
-					field: {
-						name: 'Приятные мелочи',
-						description: 'Плагин позволяет на выбор установить различные дополнения (скринсейверы, стилизация кнопок, стиль плеера, часы в плеере и т.п.)'
-					},
-					onChange: function(value) {
-						if (value == '1') {
-							itemON('https://amikdn.github.io/tricks.js', 'Приятные Мелочи', '@lampa', 'Tricks');
-						}
-						if (value == '2') {
-							var pluginToRemoveUrl = "https://amikdn.github.io/tricks.js";
-							deletePlugin(pluginToRemoveUrl);
-						}	
-					},
-					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900');  hideInstall()
-						/*var myResult = checkPlugin('https://amikdn.github.io/tricks.js')
-						setTimeout(function() {	
-							$('div[data-name="Tricks"]').append('<div class="settings-param__status one"></div>')
-							if (myResult) {
-								$('div[data-name="Tricks"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
-							} else {
-								$('div[data-name="Tricks"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
-							}
-						}, 100);*/
-						var myResult = checkPlugin('https://amikdn.github.io/tricks.js');
-                                                var pluginsArray = Lampa.Storage.get('plugins');
-                                                    setTimeout(function() {
-                                                       $('div[data-name="Tricks"]').append('<div class="settings-param__status one"></div>');
-                                                       var pluginStatus = null;
-                                                       for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'https://amikdn.github.io/tricks.js') {
-                                                             pluginStatus = pluginsArray[i].status;
-                                                             break;
-                                                          }
-                                                       }
-                                                       if (myResult && pluginStatus !== 0) {
-                                                          $('div[data-name="Tricks"]').find('.settings-param__status').removeClass('active error').addClass('active');
-                                                       } else if (pluginStatus === 0) {
-                                                          $('div[data-name="Tricks"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
-                                                       } else {
-                                                          $('div[data-name="Tricks"]').find('.settings-param__status').removeClass('active error').addClass('error');
                                                        }
                                                     }, 100);
 					}
@@ -718,7 +922,7 @@ Lampa.SettingsApi.addComponent({
 						},
 					field: {
 						name: 'Коллекции',
-						description: 'Обнаружьте захватывающие коллекции фильмов и сериалов в главном меню приложения. От новинок до классики — каждая коллекция это увлекательное погружение в мир киноискусства'
+						description: 'Захватывающие коллекции фильмов и сериалов в главном меню приложения. От новинок до классики — каждая коллекция это увлекательное погружение в мир киноискусства'
 					},
 					onChange: function(value) {
 						if (value == '1') {
@@ -785,7 +989,7 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('hhttps://Kamikadze22rus.github.io/weather.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/weather.js')
 						setTimeout(function() {	
 							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -840,7 +1044,7 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('hhttps://Kamikadze22rus.github.io/cuboff.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/cuboff.js')
 						setTimeout(function() {	
 							$('div[data-name="Cub_off"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -1270,7 +1474,7 @@ Lampa.SettingsApi.addComponent({
 							},
 						field: {
 							name: 'LME Shikimori',
-							description: 'Отображает информацию по аниме с Shikimori, так же пытается найти по оригинальному названию на ТМДБ, если найдено множество результато, то покажет меню с выбором'
+							description: 'Отображает информацию по аниме с Shikimori, так же пытается найти по оригинальному названию на TMDB, если найдено множество результатов, то покажет меню с выбором'
 						},
 						onChange: function(value) {
 							if (value == '1') {
@@ -1282,7 +1486,7 @@ Lampa.SettingsApi.addComponent({
 							}
 						},
 						onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-							/*var myResult = checkPlugin('')
+							/*var myResult = checkPlugin('https://lampame.github.io/main/shikimori.js')
 							setTimeout(function() {	
 								$('div[data-name="Shikimori"]').append('<div class="settings-param__status one"></div>')
 								if (myResult) {
@@ -1338,7 +1542,7 @@ Lampa.SettingsApi.addComponent({
 							}
 						},
 						onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-							/*var myResult = checkPlugin('')
+							/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/nots.js')
 							setTimeout(function() {	
 								$('div[data-name="ts_del"]').append('<div class="settings-param__status one"></div>')
 								if (myResult) {
@@ -1394,13 +1598,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/weather.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/rusmovies.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="rus_movie"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="rus_movie"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="rus_movie"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/rusmovies.js');
@@ -1450,13 +1654,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/weather.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/quality.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="in_qual"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="in_qual"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="in_qual"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/quality.js');
@@ -1508,11 +1712,11 @@ Lampa.SettingsApi.addComponent({
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
 						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/logo.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="logo_title"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="logo_title"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="logo_title"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/logo.js');
@@ -1562,13 +1766,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/logo.js')
+						/*var myResult = checkPlugin('https://lampame.github.io/main/trakttv.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="trakt"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="trakt"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="trakt"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://lampame.github.io/main/trakttv.js');
@@ -1618,13 +1822,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/logo.js')
+						/*var myResult = checkPlugin('https://and7ey.github.io/lampa/head_filter.js)
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="head_filter"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="head_filter"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="head_filter"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://and7ey.github.io/lampa/head_filter.js');
@@ -1674,13 +1878,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/logo.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/cardify.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="cardify"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="cardify"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="cardify"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/cardify.js');
@@ -1731,13 +1935,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/weather.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/foreign.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="inter_movie"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="inter_movie"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="inter_movie"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/foreign.js');
@@ -1789,11 +1993,11 @@ Lampa.SettingsApi.addComponent({
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
 						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/lampa_rate.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="rate_lampa"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="rate_lampa"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="rate_lampa"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/lampa_rate.js');
@@ -1844,13 +2048,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 			                onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall()
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/weather.js')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/seaseps.js')
 						setTimeout(function() {	
-							$('div[data-name="Weather"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="eps_and_seas"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="eps_and_seas"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Weather"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="eps_and_seas"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/seaseps.js');
@@ -1873,26 +2077,7 @@ Lampa.SettingsApi.addComponent({
                                                        }
                                                     }, 100);
 					}
-		});
-
-	
-	      /*  Lampa.SettingsApi.addParam({
-                                  component: 'add_interface_plugin',
-                                  param: {
-                                         name: 'Reboot_interface_plugin',
-                                         type: 'static',
-                                  },
-                                  field: {
-                                         name: '<div class="settings-folder" style="padding:0!important"><div style="display: block; margin: 0 auto;height:2.3em;padding-right:.1em"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g style="fill:none;stroke:#ffffff;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round;"> <path d="m 50,10 0,35"></path> <path d="M 20,29 C 4,52 15,90 50,90 85,90 100,47 74,20"></path> </g> <path style="fill:#ffffff;" d="m 2,21 29,-2 2,29"></path> </g></svg></div></div>',
-					 description: '<div style="text-align: center;">Нажмите для перезагрузки Lampa</div>',
-	                           },
-                                   onRender: function (item) {
-                                      item.on('hover:enter', function(){
-                                         location.reload();
-                                      });
-                                   }
-	        });*/
-	        
+		});  
 
         Lampa.Settings.listener.follow('open', function (e) {
 					if (e.name == 'main') {
@@ -2108,15 +2293,15 @@ Lampa.SettingsApi.addComponent({
 					},
 					onChange: function(value) {
 						if (value == '1') {
-							itemON('http://cub.red/plugin/dlna', 'DLNA', '@lampa', 'DLNA');
+							itemON('http://cub.rip/plugin/dlna', 'DLNA', '@lampa', 'DLNA');
 						}
 						if (value == '2') {
-							var pluginToRemoveUrl = "http://cub.red/plugin/dlna";
+							var pluginToRemoveUrl = "http://cub.rip/plugin/dlna";
 							deletePlugin(pluginToRemoveUrl);
 						}
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('http://cub.red/plugin/dlna')
+						/*var myResult = checkPlugin('http://cub.rip/plugin/dlna')
 						setTimeout(function() {	
 							$('div[data-name="DLNA"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -2125,13 +2310,13 @@ Lampa.SettingsApi.addComponent({
 								$('div[data-name="DLNA"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
-						var myResult = checkPlugin('http://cub.red/plugin/dlna');
+						var myResult = checkPlugin('http://cub.rip/plugin/dlna');
                                                 var pluginsArray = Lampa.Storage.get('plugins');
                                                     setTimeout(function() {
                                                        $('div[data-name="DLNA"]').append('<div class="settings-param__status one"></div>');
                                                        var pluginStatus = null;
                                                        for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'http://cub.red/plugin/dlna') {
+                                                          if (pluginsArray[i].url === 'http://cub.rip/plugin/dlna') {
                                                              pluginStatus = pluginsArray[i].status;
                                                              break;
                                                           }
@@ -2449,13 +2634,13 @@ Lampa.SettingsApi.addComponent({
 						}	
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900');  hideInstall()
-						/*var myResult = checkPlugin('http://193.233.134.21/plugins/setprotect')
+						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/menusort.js')
 						setTimeout(function() {	
-							$('div[data-name="setprotect"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="Sort_mainmenu"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="setprotect"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="Sort_mainmenu"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="setprotect"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="Sort_mainmenu"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://Kamikadze22rus.github.io/menusort.js');
@@ -2562,13 +2747,13 @@ Lampa.SettingsApi.addComponent({
 						}
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/redirect.js')
+						/*var myResult = checkPlugin('https://lampame.github.io/main/infuseSave.js')
 						setTimeout(function() {	
-							$('div[data-name="Redirect"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="infuse_save"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="Redirect"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="infuse_save"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="Redirect"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="infuse_save"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://lampame.github.io/main/infuseSave.js');
@@ -2592,23 +2777,6 @@ Lampa.SettingsApi.addComponent({
                                                     }, 100);
 					}
 		});
-	
-	      /*  Lampa.SettingsApi.addParam({
-                                  component: 'add_management_plugin',
-                                  param: {
-                                         name: 'Reboot_management_plugin',
-                                         type: 'static',
-                                  },
-                                  field: {
-                                         name: '<div class="settings-folder" style="padding:0!important"><div style="display: block; margin: 0 auto;height:2.3em;padding-right:.1em"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g style="fill:none;stroke:#ffffff;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round;"> <path d="m 50,10 0,35"></path> <path d="M 20,29 C 4,52 15,90 50,90 85,90 100,47 74,20"></path> </g> <path style="fill:#ffffff;" d="m 2,21 29,-2 2,29"></path> </g></svg></div></div>',
-					 description: '<div style="text-align: center;">Нажмите для перезагрузки Lampa</div>',
-	                           },
-                                   onRender: function (item) {
-                                      item.on('hover:enter', function(){
-                                         location.reload();
-                                      });
-                                   }
-	        });*/
 
         Lampa.Settings.listener.follow('open', function (e) {
 					if (e.name == 'main') {
@@ -2638,8 +2806,174 @@ Lampa.SettingsApi.addComponent({
 						});
 					}
 		});
-                 
 
+		   		Lampa.SettingsApi.addParam({
+					component: 'add_online_plugin',
+					param: {
+                                		name: 'Z1 Онлайн',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+					},
+					//default: '1',
+              				},
+					field: {
+						name: 'Z1 Онлайн',
+						description: 'Фильмы и сериалы онлайн'
+					},
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('http://z01.online/live', 'Z1 Онлайн', '@z1', 'Z1 Онлайн');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "http://z01.online/live";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('http://z01.online/live')
+						setTimeout(function() {	
+							$('div[data-name="Z1 Онлайн"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="Z1 Онлайн"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="Z1 Онлайн"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('http://z01.online/live');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="Z1 Онлайн"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'http://z01.online/live') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="Z1 Онлайн"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="Z1 Онлайн"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="Z1 Онлайн"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+        });
+	
+		   		Lampa.SettingsApi.addParam({
+					component: 'add_online_plugin',
+					param: {
+                                		name: 'Smotret24 RU',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+					},
+					//default: '1',
+              				},
+					field: {
+						name: 'Smotret24 RU',
+						description: 'Плагин для онлайн Смотреть24'
+					},
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('http://smotret24.ru/online.js', 'Smotret24', '@lampa', 'Smotret24');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "http://smotret24.ru/online.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('http://smotret24.ru/online.js')
+						setTimeout(function() {	
+							$('div[data-name="Smotret24 RU"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="Smotret24 RU"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="Smotret24 RU"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('http://smotret24.ru/online.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="Smotret24 RU"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'http://smotret24.ru/online.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="Smotret24 RU"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="Smotret24 RU"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="Smotret24 RU"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+        });
+
+			   		Lampa.SettingsApi.addParam({
+					component: 'add_online_plugin',
+					param: {
+                                		name: 'Smotret24 EU',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+					},
+					//default: '1',
+              				},
+					field: {
+						name: 'Smotret24 EU',
+						description: 'Плагин для онлайн Смотреть24'
+					},
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('http://smotret24.com/online.js', 'Smotret24', '@lampa', 'Smotret24');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "http://smotret24.com/online.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('http://smotret24.com/online.js')
+						setTimeout(function() {	
+							$('div[data-name="Smotret24 EU"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="Smotret24 EU"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="Smotret24 EU"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('http://smotret24.com/online.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="Smotret24 EU"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'http://smotret24.com/online.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="Smotret24 EU"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="Smotret24 EU"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="Smotret24 EU"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);
+					}
+        });
         
 		Lampa.SettingsApi.addParam({
 					component: 'add_online_plugin',
@@ -2920,25 +3254,7 @@ Lampa.SettingsApi.addComponent({
                                                     }, 100);	
 					}
 		});
-
-
-	
-	       /* Lampa.SettingsApi.addParam({
-                                  component: 'add_online_plugin',
-                                  param: {
-                                         name: 'Reboot_online_plugin',
-                                         type: 'static',
-                                  },
-                                  field: {
-                                         name: '<div class="settings-folder" style="padding:0!important"><div style="display: block; margin: 0 auto;height:2.3em;padding-right:.1em"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g style="fill:none;stroke:#ffffff;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round;"> <path d="m 50,10 0,35"></path> <path d="M 20,29 C 4,52 15,90 50,90 85,90 100,47 74,20"></path> </g> <path style="fill:#ffffff;" d="m 2,21 29,-2 2,29"></path> </g></svg></div></div>',
-					 description: '<div style="text-align: center;">Нажмите для перезагрузки Lampa</div>',
-	                           },
-                                   onRender: function (item) {
-                                      item.on('hover:enter', function(){
-                                         location.reload();
-                                      });
-                                   }
-		});	*/		   
+	   
 /* Торрент */
 		Lampa.Settings.listener.follow('open', function (e) {
 					if (e.name == 'main') {
@@ -3216,7 +3532,7 @@ Lampa.SettingsApi.addComponent({
                                                 }
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('https://lampame.github.io/td/td.js')
+						/*var myResult = checkPlugin('https://lampame.github.io/main/torrentmanager/torrentmanager.js')
 						setTimeout(function() {	
 							$('div[data-name="Torr_download"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -3328,13 +3644,13 @@ Lampa.SettingsApi.addComponent({
                                                 }
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('https://bylampa.github.io/freetorr.js')
+						/*var myResult = checkPlugin('https://plugin.rootu.top/ts-preload.js')
 						setTimeout(function() {	
-							$('div[data-name="free_torr"]').append('<div class="settings-param__status one"></div>')
+							$('div[data-name="visual_ts"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
-								$('div[data-name="free_torr"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+								$('div[data-name="visual_ts"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
 							} else {
-								$('div[data-name="free_torr"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+								$('div[data-name="visual_ts"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
 						var myResult = checkPlugin('https://plugin.rootu.top/ts-preload.js');
@@ -3357,24 +3673,7 @@ Lampa.SettingsApi.addComponent({
                                                        }
                                                     }, 100);	
 					}
-		});
-	/*
-	        Lampa.SettingsApi.addParam({
-                                  component: 'add_torrent_plugin',
-                                  param: {
-                                         name: 'Reboot_torrent_plugin',
-                                         type: 'static',
-                                  },
-                                  field: {
-                                         name: '<div class="settings-folder" style="padding:0!important"><div style="display: block; margin: 0 auto;height:2.3em;padding-right:.1em"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g style="fill:none;stroke:#ffffff;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round;"> <path d="m 50,10 0,35"></path> <path d="M 20,29 C 4,52 15,90 50,90 85,90 100,47 74,20"></path> </g> <path style="fill:#ffffff;" d="m 2,21 29,-2 2,29"></path> </g></svg></div></div>',
-					 description: '<div style="text-align: center;">Нажмите для перезагрузки Lampa</div>',
-	                           },
-                                   onRender: function (item) {
-                                      item.on('hover:enter', function(){
-                                         location.reload();
-                                      });
-                                   }
-		});*/			   
+		});		   
 	
 		Lampa.Settings.listener.follow('open', function (e) {
 					if (e.name == 'main') {
@@ -3534,15 +3833,15 @@ Lampa.SettingsApi.addComponent({
 					},
 					onChange: function(value) {
 						if (value == '1') {
-							itemON('http://cub.red/plugin/iptv', 'IPTV', '@lampa', 'IPTV');
+							itemON('http://cub.rip/plugin/iptv', 'IPTV', '@lampa', 'IPTV');
 						}
 						if (value == '2') {
-							var pluginToRemoveUrl = "http://cub.red/plugin/iptv";
+							var pluginToRemoveUrl = "http://cub.rip/plugin/iptv";
 							deletePlugin(pluginToRemoveUrl);
 						}
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('http://cub.red/plugin/iptv')
+						/*var myResult = checkPlugin('http://cub.rip/plugin/iptv')
 						setTimeout(function() {	
 							$('div[data-name="IPTV"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -3551,13 +3850,13 @@ Lampa.SettingsApi.addComponent({
 								$('div[data-name="IPTV"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
-						var myResult = checkPlugin('http://cub.red/plugin/iptv');
+						var myResult = checkPlugin('http://cub.rip/plugin/iptv');
                                                 var pluginsArray = Lampa.Storage.get('plugins');
                                                     setTimeout(function() {
                                                        $('div[data-name="IPTV"]').append('<div class="settings-param__status one"></div>');
                                                        var pluginStatus = null;
                                                        for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'http://cub.red/plugin/iptv') {
+                                                          if (pluginsArray[i].url === 'http://cub.rip/plugin/iptv') {
                                                              pluginStatus = pluginsArray[i].status;
                                                              break;
                                                           }
@@ -3589,15 +3888,15 @@ Lampa.SettingsApi.addComponent({
 					},
 					onChange: function(value) {
 						if (value == '1') {
-							itemON('https://bylampa.github.io/tv.js', 'Hack TV', '@lampa', 'Hack_TV');
+							itemON('https://amikdn.github.io/ip_tv.js', 'Hack TV', '@lampa', 'Hack_TV');
 						}
 						if (value == '2') {
-							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/tv.js";
+							var pluginToRemoveUrl = "https://amikdn.github.io/ip_tv.js";
 							deletePlugin(pluginToRemoveUrl);
 						}
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('https://Kamikadze22rus.github.io/tv.js')
+						/*var myResult = checkPlugin('https://amikdn.github.io/ip_tv.js')
 						setTimeout(function() {	
 							$('div[data-name="Hack_TV"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -3606,13 +3905,13 @@ Lampa.SettingsApi.addComponent({
 								$('div[data-name="Hack_TV"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
-						var myResult = checkPlugin('https://Kamikadze22rus.github.io/tv.js');
+						var myResult = checkPlugin('https://amikdn.github.io/ip_tv.js');
                                                 var pluginsArray = Lampa.Storage.get('plugins');
                                                     setTimeout(function() {
                                                        $('div[data-name="Hack_TV"]').append('<div class="settings-param__status one"></div>');
                                                        var pluginStatus = null;
                                                        for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'https://Kamikadze22rus.github.io/tv.js') {
+                                                          if (pluginsArray[i].url === 'https://amikdn.github.io/ip_tv.js') {
                                                              pluginStatus = pluginsArray[i].status;
                                                              break;
                                                           }
@@ -3627,124 +3926,7 @@ Lampa.SettingsApi.addComponent({
                                                     }, 100);	
 					}
 		});
-	       /* Lampa.SettingsApi.addParam({
-                                  component: 'add_tv_plugin',
-                                  param: {
-                                         name: 'Reboot_tv_plugin',
-                                         type: 'static',
-                                  },
-                                  field: {
-                                         name: '<div class="settings-folder" style="padding:0!important"><div style="display: block; margin: 0 auto;height:2.3em;padding-right:.1em"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g style="fill:none;stroke:#ffffff;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round;"> <path d="m 50,10 0,35"></path> <path d="M 20,29 C 4,52 15,90 50,90 85,90 100,47 74,20"></path> </g> <path style="fill:#ffffff;" d="m 2,21 29,-2 2,29"></path> </g></svg></div></div>',
-					 description: '<div style="text-align: center;">Нажмите для перезагрузки Lampa</div>',
-	                           },
-                                   onRender: function (item) {
-                                      item.on('hover:enter', function(){
-                                         location.reload();
-                                      });
-                                   }
-		});*/			   
-               
-	        /*Lampa.Settings.listener.follow('open', function (e) {
-					if (e.name == 'main') {
-						Lampa.SettingsApi.addComponent({
-							component: 'add_music_plugin',
-							name: 'Music'
-						});
-					}
-		});*/
-/* Музыка */
-		/*Lampa.SettingsApi.addParam({
-					component: 'add_plugin',
-					param: {
-						name: 'add_music_plugin',
-						type: 'static',
-					default: true
-                         		},
-					field: {
-						name: icon_add_music_plugin
-                         		},
-					onRender: function(item) {
-						item.on('hover:enter', function () {
-							Lampa.Settings.create('add_music_plugin');
-							Lampa.Controller.enabled().controller.back = function(){
-								Lampa.Settings.create('add_plugin');
-							}
-						});
-					}
-		});*/
-
-	        /*Lampa.SettingsApi.addParam({
-					component: 'add_music_plugin',
-					param: {
-						name: 'lme_music',
-       				                type: 'select',
-                       				values: {
-							1:	'Установить',
-							2:	'Удалить',
-                        			},
-					//default: '1',
-					},
-					field: {
-						name: 'LME Music',
-						description: 'Слушаем или смотрим live с YouTube по жанрам (доступен поиск)'
-					},
-					onChange: function(value) {
-                        			if (value == '1') {
-							itemON('https://lampame.github.io/main/music.js', 'LME Music', '@GwynnBleiidd', 'lme_music');
-                     				}
-						if (value == '2') {
-							var pluginToRemoveUrl = "https://lampame.github.io/main/music.js";
-							deletePlugin(pluginToRemoveUrl);
-						}
-                    },
-					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('https://lampame.github.io/main/music.js')
-						setTimeout(function() {	
-							$('div[data-name="lme_music"]').append('<div class="settings-param__status one"></div>')
-							if (myResult) {
-								$('div[data-name="lme_music"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
-							} else {
-								$('div[data-name="lme_music"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
-							}
-						}, 100);*/
-						/*var myResult = checkPlugin('https://lampame.github.io/main/music.js');
-                                                var pluginsArray = Lampa.Storage.get('plugins');
-                                                    setTimeout(function() {
-                                                       $('div[data-name="lme_music"]').append('<div class="settings-param__status one"></div>');
-                                                       var pluginStatus = null;
-                                                       for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'https://lampame.github.io/main/music.js') {
-                                                             pluginStatus = pluginsArray[i].status;
-                                                             break;
-                                                          }
-                                                       }
-                                                       if (myResult && pluginStatus !== 0) {
-                                                          $('div[data-name="lme_music"]').find('.settings-param__status').removeClass('active error').addClass('active');
-                                                       } else if (pluginStatus === 0) {
-                                                          $('div[data-name="lme_music"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
-                                                       } else {
-                                                          $('div[data-name="lme_music"]').find('.settings-param__status').removeClass('active error').addClass('error');
-                                                       }
-                                                    }, 100);	
-					}
-		});*/
-	
-                /* Lampa.SettingsApi.addParam({
-                                  component: 'add_music_plugin',
-                                  param: {
-                                         name: 'Reboot_music_plugin',
-                                         type: 'static',
-                                  },
-                                  field: {
-                                         name: '<div class="settings-folder" style="padding:0!important"><div style="display: block; margin: 0 auto;height:2.3em;padding-right:.1em"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g style="fill:none;stroke:#ffffff;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round;"> <path d="m 50,10 0,35"></path> <path d="M 20,29 C 4,52 15,90 50,90 85,90 100,47 74,20"></path> </g> <path style="fill:#ffffff;" d="m 2,21 29,-2 2,29"></path> </g></svg></div></div>',
-					 description: '<div style="text-align: center;">Нажмите для перезагрузки Lampa</div>',
-	                           },
-                                   onRender: function (item) {
-                                      item.on('hover:enter', function(){
-                                         location.reload();
-                                      });
-                                   }
-		});*/			   
+			   
 	
 		Lampa.Settings.listener.follow('open', function (e) {
 					if (e.name == 'main') {
@@ -3792,15 +3974,15 @@ Lampa.SettingsApi.addComponent({
 					},
 					onChange: function(value) {
 						if (value == '1') {
-							itemON('http://cub.red/plugin/radio', 'Радио Record', '@lampa', 'Record');
+							itemON('http://cub.rip/plugin/radio', 'Радио Record', '@lampa', 'Record');
 						}
 						if (value == '2') {
-							var pluginToRemoveUrl = "http://cub.red/plugin/radio";
+							var pluginToRemoveUrl = "http://cub.rip/plugin/radio";
 							deletePlugin(pluginToRemoveUrl);
 						}
 					},
 					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
-						/*var myResult = checkPlugin('http://cub.red/plugin/radio')
+						/*var myResult = checkPlugin('http://cub.rip/plugin/radio')
 						setTimeout(function() {	
 							$('div[data-name="Record"]').append('<div class="settings-param__status one"></div>')
 							if (myResult) {
@@ -3809,13 +3991,13 @@ Lampa.SettingsApi.addComponent({
 								$('div[data-name="Record"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
 							}
 						}, 100);*/
-						var myResult = checkPlugin('http://cub.red/plugin/radio');
+						var myResult = checkPlugin('http://cub.rip/plugin/radio');
                                                 var pluginsArray = Lampa.Storage.get('plugins');
                                                     setTimeout(function() {
                                                        $('div[data-name="Record"]').append('<div class="settings-param__status one"></div>');
                                                        var pluginStatus = null;
                                                        for (var i = 0; i < pluginsArray.length; i++) {
-                                                          if (pluginsArray[i].url === 'http://cub.red/plugin/radio') {
+                                                          if (pluginsArray[i].url === 'http://cub.rip/plugin/radio') {
                                                              pluginStatus = pluginsArray[i].status;
                                                              break;
                                                           }
@@ -3942,22 +4124,7 @@ Lampa.SettingsApi.addComponent({
                                                     }, 100);	
 					}
 		});
-	       /* Lampa.SettingsApi.addParam({
-                                  component: 'add_radio_plugin',
-                                  param: {
-                                         name: 'Reboot_radio_plugin',
-                                         type: 'static',
-                                  },
-                                  field: {
-                                         name: '<div class="settings-folder" style="padding:0!important"><div style="display: block; margin: 0 auto;height:2.3em;padding-right:.1em"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g style="fill:none;stroke:#ffffff;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round;"> <path d="m 50,10 0,35"></path> <path d="M 20,29 C 4,52 15,90 50,90 85,90 100,47 74,20"></path> </g> <path style="fill:#ffffff;" d="m 2,21 29,-2 2,29"></path> </g></svg></div></div>',
-					 description: '<div style="text-align: center;">Нажмите для перезагрузки Lampa</div>',
-	                           },
-                                   onRender: function (item) {
-                                      item.on('hover:enter', function(){
-                                         location.reload();
-                                      });
-                                   }
-		});*/			   
+		   
 /* Клубника */
 		Lampa.Settings.listener.follow('open', function (e) {
 					if (e.name == 'main') {
@@ -4099,7 +4266,61 @@ Lampa.SettingsApi.addComponent({
 					}
 		});
 
-
+	        Lampa.SettingsApi.addParam({
+					component: 'add_sisi_plugin',
+					param: {
+						name: 'sisi',
+						type: 'select',
+						values: {
+							1:	'Установить',
+							2:	'Удалить',
+						},
+						//default: '1',
+					},
+					field: {
+						name: 'Клубничка (sisi)',
+						description: 'Другая версия плагина Клубничка (у кого не завелся основной плагин)'
+					},
+					onChange: function(value) {
+						if (value == '1') {
+							itemON('http://Kamikadze22rus.github.io/sisi.js', 'Клубничка (sisi)', '@lampa', 'sisi');
+						}
+						if (value == '2') {
+							var pluginToRemoveUrl = "http://Kamikadze22rus.github.io/sisi.js";
+							deletePlugin(pluginToRemoveUrl);
+						}
+					},
+					onRender: function (item) {$('.settings-param__name', item).css('color','f3d900'); hideInstall();
+						/*var myResult = checkPlugin('http://Kamikadze22rus.github.io/sisi.js')
+						setTimeout(function() {	
+							$('div[data-name="sisi"]').append('<div class="settings-param__status one"></div>')
+							if (myResult) {
+								$('div[data-name="sisi"]').find('.settings-param__status').removeClass('active error wait').addClass('active')
+							} else {
+								$('div[data-name="sisi"]').find('.settings-param__status').removeClass('active error wait').addClass('error')
+							}
+						}, 100);*/
+						var myResult = checkPlugin('http://Kamikadze22rus.github.io/sisi.js');
+                                                var pluginsArray = Lampa.Storage.get('plugins');
+                                                    setTimeout(function() {
+                                                       $('div[data-name="sisi"]').append('<div class="settings-param__status one"></div>');
+                                                       var pluginStatus = null;
+                                                       for (var i = 0; i < pluginsArray.length; i++) {
+                                                          if (pluginsArray[i].url === 'http://Kamikadze22rus.github.io/sisi.js') {
+                                                             pluginStatus = pluginsArray[i].status;
+                                                             break;
+                                                          }
+                                                       }
+                                                       if (myResult && pluginStatus !== 0) {
+                                                          $('div[data-name="sisi"]').find('.settings-param__status').removeClass('active error').addClass('active');
+                                                       } else if (pluginStatus === 0) {
+                                                          $('div[data-name="sisi"]').find('.settings-param__status').removeClass('active error').css('background-color', 'rgb(255, 165, 0)');
+                                                       } else {
+                                                          $('div[data-name="sisi"]').find('.settings-param__status').removeClass('active error').addClass('error');
+                                                       }
+                                                    }, 100);	
+					}
+		});
 	
 
 	 Lampa.Settings.listener.follow('open', function(e) {
