@@ -3031,7 +3031,7 @@ Lampa.SettingsApi.addComponent({
 					},
 					onChange: function(value) {
 						if (value == '1') {
-							itemON('https://Kamikadze22rus.github.io/jackett.js', 'Переключение Парсеров', '@4m1K', 'Switch_Parser');
+							itemON('https://Kamikadze22rus.github.io/jackett.js', 'Переключение Парсеров', '@Kamikadze22rus', 'Switch_Parser');
 						}
 						if (value == '2') {
 							var pluginToRemoveUrl = "https://Kamikadze22rus.github.io/jackett.js";
